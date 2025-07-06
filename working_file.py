@@ -85,6 +85,24 @@ check_outlier(df_test, num_cols)
 
 
 
+# %% [markdown]
+# EXPLORATORY DATA ANALYSIS (EDA)
+
+# %%
+# exploring the target distribution
+
+sns.countplot(df_test, x = 'Personality', palette = 'Set2')
+plt.show()
+
+personality_values = df_test['Personality'].value_counts()
+personality_ratio = personality_values/ len(df_test)*100
+
+personality_df = pd.DataFrame({'Values': personality_values, 'ratio': personality_ratio})
+
+print(f'{personality_df}')
+
+
+
 # %%
 #plotting outliers
 
@@ -144,7 +162,7 @@ for cols in cat_cols.drop('Personality'):
 
 
 for cols in cat_cols.drop('Personality'):
-    ax, figure = plt.subplots(figsize = (6,4))
+    figure,ax  = plt.subplots(figsize = (6,4))
     sns.countplot(df_test, x = cols, order = df_test[cols].value_counts().index, hue = 'Personality', palette = 'Set2', edgecolor = 'black')
     plt.xlabel('Indicator')
     plt.title(f'{cols}')
@@ -166,6 +184,30 @@ plt.show()
 
 
 
+
+# %%
+#exploring the correlation using pairplot
+sns.pairplot(df_test,vars=num_cols, hue = 'Personality')
+
+# %%
+#Exploring the relationship between Time_spent_alone and the rest of the variables:
+
+for i, col in enumerate(num_cols):
+   if col != 'Time_spent_Alone': 
+    a = sns.jointplot(data = df_test, x = col, y = 'Time_spent_Alone', hue="Personality", kind = 'scatter')
+    a.fig.suptitle(f'{col} vs Time_spent_Alone by Personality', y = 1.02)
+    plt.show()
+
+# %%
+#comparing the categorical parameters with the target variable
+
+figure, ax = plt.subplots(figsize = (16,9))
+for i,cols in enumerate(num_cols):
+    plt.subplot(2,4,i+1)
+    sns.boxplot(df_test, x = 'Personality', y = cols, hue = 'Personality', palette="Set2")
+ax.set_xticks([])
+ax.set_yticks([])
+plt.show()
 
 # %% [markdown]
 # ##Analysis write-up
